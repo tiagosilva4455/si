@@ -22,7 +22,7 @@ class SelectPercentile():
         feats_percentile = dataset.X[:, idxs]
         feats_percentile_name = [dataset.features[idx]for idx in idxs]
         return Dataset(feats_percentile, dataset.y, feats_percentile_name, dataset.X)
-    
+
         
 
     def fit_transform(self,dataset: Dataset) -> Dataset:
