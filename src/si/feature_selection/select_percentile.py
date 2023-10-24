@@ -5,7 +5,7 @@ from si.statistics.f_classification import f_classification
 
 class SelectPercentile():
 
-    def __init__ (self, percentile:float = 0.0, score_func = f_classification) -> None:
+    def __init__ (self, percentile:float = 0.5, score_func = f_classification) -> None:
         
         self.score_func = score_func
         self.percentile = percentile
@@ -13,12 +13,17 @@ class SelectPercentile():
         self.p = None
 
     def fit(self, dataset: Dataset) -> "SelectPercentile":
-       self.percentile = np.percentile(dataset.X, axis=0)
+       self.F, self.p = self.score_func(dataset)
+       return self
 
-    def transform(self, dataset: Dataset) -> Dataset: 
-        X= dataset.X
-
-        features_mask = self.percentile
+    def transform(self, dataset: Dataset) -> Dataset:
+        n_selection = int(len(dataset.features)*self.percentile) 
+        idxs = np.argsort(self.F)[-n_selection:]
+        feats_percentile = dataset.X[:, idxs]
+        feats_percentile_name = [dataset.features[idx]for idx in idxs]
+        return Dataset(feats_percentile, dataset.y, feats_percentile_name, dataset.X)
+    
+        
 
     def fit_transform(self,dataset: Dataset) -> Dataset:
         self.fit(dataset)
