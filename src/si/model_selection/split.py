@@ -41,3 +41,48 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
     train = Dataset(dataset.X[train_idxs], dataset.y[train_idxs], features=dataset.features, label=dataset.label)
     test = Dataset(dataset.X[test_idxs], dataset.y[test_idxs], features=dataset.features, label=dataset.label)
     return train, test
+
+def stratified_train_test_split (dataset:Dataset, test_size:float = 0.2, random_state:int = 42) -> Tuple[Dataset,Dataset]:
+    unique_labels, label_counts = np.unique(dataset.y, return_counts=True)
+
+    train_idxs =[]
+    test_idxs=[]
+
+    for label in unique_labels:
+        num_test_samples = int(test_size * label_counts[label])
+        np.random.seed(random_state)
+        idxs = np.where(dataset.y == label)[0] #identifica o indice onde a variavel target y é igual ao label atual, encontra os pontos qque pertencem a uma dada classe
+        np.random.shuffle(idxs)
+
+        test_idxs.extend(idxs[:num_test_samples])
+        train_idxs.extend(idxs[num_test_samples:])
+
+    train = Dataset(dataset.X[train_idxs], dataset.y[train_idxs], features=dataset.features, label=dataset.label)
+    test = Dataset(dataset.X[test_idxs], dataset.y[test_idxs], features=dataset.features, label=dataset.label)
+    return train, test
+
+    
+    #test with iris dataset
+if __name__ == "__main__":
+    from sklearn import datasets
+
+    iris = datasets.load_iris()
+    X = iris.data
+    y = iris.target
+    feature_names = iris.feature_names
+    target_names = iris.target_names
+
+    dataset = Dataset(X, y, features=feature_names, label='target')
+    
+    #test using your stratified_train_test_split function
+    train_dataset, test_dataset = train_test_split(dataset, test_size=0.2, random_state=42)
+
+    print(train_dataset.shape())
+    print(test_dataset.shape())
+
+
+    #test using your stratified_train_test_split function
+    train_dataset, test_dataset = stratified_train_test_split(dataset, test_size=0.2, random_state=42)
+
+    print(train_dataset.shape())
+    print(test_dataset.shape())
