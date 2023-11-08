@@ -48,8 +48,8 @@ def stratified_train_test_split (dataset:Dataset, test_size:float = 0.2, random_
     train_idxs =[]
     test_idxs=[]
 
-    for label in unique_labels:
-        num_test_samples = int(test_size * label_counts[label])
+    for label, count in zip(unique_labels, label_counts):
+        num_test_samples = int(test_size * count)
         np.random.seed(random_state)
         idxs = np.where(dataset.y == label)[0] #identifica o indice onde a variavel target y é igual ao label atual, encontra os pontos qque pertencem a uma dada classe
         np.random.shuffle(idxs)
