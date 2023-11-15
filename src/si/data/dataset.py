@@ -110,6 +110,50 @@ class Dataset:
         """
         return np.nanmax(self.X, axis=0)
 
+    def dropna(self) -> "Dataset":
+        """
+        Returns a new dataset with missing values removed
+        Returns
+        -------
+        Dataset
+        """
+        if self.y is None:
+            return Dataset(self.X[~np.isnan(self.X).any(axis=1)], features=self.features)
+        else:
+            return Dataset(self.X[~np.isnan(self.X).any(axis=1)], self.y[~np.isnan(self.X).any(axis=1)], features=self.features, label=self.label)
+
+    def fillna(self, value: Union[int, float]) -> "Dataset":
+        """
+        Returns a new dataset with missing values filled
+        Parameters
+        ----------
+        value: int or float
+            The value to fill missing values with
+        Returns
+        -------
+        Dataset
+        """
+        if self.y is None:
+            return Dataset(np.nan_to_num(self.X, nan=value), features=self.features)
+        else:
+            return Dataset(np.nan_to_num(self.X, nan=value), self.y, features=self.features, label=self.label)
+
+    def remove_by_index(self, indices: np.ndarray) -> "Dataset":
+        """
+        Returns a new dataset with samples removed by index
+        Parameters
+        ----------
+        indices: numpy.ndarray (n_samples)
+            The indices to remove
+        Returns
+        -------
+        Dataset
+        """
+        if self.y is None:
+            return Dataset(np.delete(self.X, indices, axis=0), features=self.features)
+        else:
+            return Dataset(np.delete(self.X, indices, axis=0), np.delete(self.y, indices, axis=0), features=self.features, label=self.label)
+
     def summary(self) -> pd.DataFrame:
         """
         Returns a summary of the dataset
