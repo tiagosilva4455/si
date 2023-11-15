@@ -5,8 +5,28 @@ from si.metrics.accuracy import accuracy
 
 
 class RandomForestClassifier:
-
+    """
+    Random Forest Classifier.
+    """
     def __init__ (self, n_estimators:int, max_features:int, min_sample_split:int, max_depth:int, mode, random_seed:int = 1) -> None:
+        """
+        Constructor for RandomForestClassifier class.
+
+        Parameters
+        ----------
+        n_estimators: int
+            Number of trees in the forest.
+        max_features: int
+            Number of features to consider when looking for the best split.
+        min_sample_split: int
+            Minimum number of samples required to split an internal node.
+        max_depth: int
+            Maximum depth of the tree.
+        mode: str
+            The mode to use.
+        random_seed: int
+            The seed of the random number generator.
+        """
         self.n_estimators = n_estimators
         self.max_features = max_features
         self.min_sample_split = min_sample_split
@@ -17,6 +37,20 @@ class RandomForestClassifier:
         self.trees =[]
 
     def fit(self, dataset:Dataset) -> "RandomForestClassifier":
+        """
+        Fit the RandomForestClassifier class.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to fit.
+
+        Returns
+        -------
+        self: RandomForestClassifier
+            The fitted RandomForestClassifier class.
+
+        """
         
         np.random.seed(self.random_seed)
 
@@ -43,12 +77,39 @@ class RandomForestClassifier:
         return self
 
     def most_common (self, sample_predictions):
+        """
+        Find the most common value in an array.
+
+        Parameters
+        ----------
+        sample_predictions: np.ndarray
+            The array to find the most common value in.
+
+        Returns
+        -------
+        most_common_array: np.ndarray
+            The most common value in an array.
+
+        """
         unique_classes, counts = np.unique(sample_predictions,return_counts=True)
         most_common_array = unique_classes[np.argmax(counts)]
         return most_common_array
         
 
     def predict(self, dataset:Dataset) -> np.ndarray:
+        """
+        Predict the values for a given dataset.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to predict.
+
+        Returns
+        -------
+        predictions: np.ndarray
+            The predicted values.
+        """
         all_predictions=[]
 
         for feature_indice, tree in self.trees:
@@ -62,6 +123,20 @@ class RandomForestClassifier:
         return most_common_prediction
 
     def score(self, dataset:Dataset)->float:
+        """
+        Calculate the accuracy of the model on a given dataset.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to calculate the accuracy on.
+
+        Returns
+        -------
+        score: float
+            The accuracy of the model.
+
+        """
         predictions = self.predict(dataset)
         return accuracy(dataset.y, predictions)
 

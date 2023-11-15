@@ -1,6 +1,20 @@
 import numpy as np
 
 def manhattan_distance (x:np.ndarray,y:np.ndarray)-> np.ndarray:
+    """
+    Calculates the manhattan distance between two arrays
+    Parameters
+    ----------
+    x: numpy.ndarray
+        The first array.
+    y: numpy.ndarray
+        The second array.
+
+    Returns
+    -------
+    numpy.ndarray
+        The manhattan distance between the two arrays.
+    """
     return np.abs((x - y).sum(axis = 1))
 
 if __name__ == '__main__':

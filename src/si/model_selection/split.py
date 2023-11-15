@@ -43,6 +43,26 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
     return train, test
 
 def stratified_train_test_split (dataset:Dataset, test_size:float = 0.2, random_state:int = 42) -> Tuple[Dataset,Dataset]:
+    """
+    Split the dataset into training and testing sets.
+
+    Parameters
+    ----------
+    dataset: Dataset
+        The dataset to split.
+    test_size: float
+        The proportion of the dataset to include in the test split.
+    random_state: int
+        The seed of the random number generator.
+
+    Returns
+    -------
+    train: Dataset
+        The training dataset.
+    test: Dataset
+        The testing dataset.
+
+    """
     unique_labels, label_counts = np.unique(dataset.y, return_counts=True)
 
     train_idxs =[]

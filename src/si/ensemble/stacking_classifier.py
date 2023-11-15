@@ -3,13 +3,40 @@ from si.data.dataset import Dataset
 from si.metrics.accuracy import accuracy 
 
 class StackingClassifier():
+    """
+    StackingClassifier class.
+    """
 
     def __init__ (self, models, final_model:str):
+        """
+        Constructor for StackingClassifier class.
 
+        Parameters
+        ----------
+        models
+            The models to use.
+        final_model: str
+            The final model to use.
+
+        """
         self.models = models
         self.final_model = final_model
 
     def fit (self, dataset:Dataset)-> "StackingClassifier":
+        """
+        Fit the StackingClassifier class.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to fit.
+
+        Returns
+        -------
+        self: StackingClassifier
+            The fitted StackingClassifier class.
+
+        """
         predictions = []
         for model in self.models:
             model.fit(dataset)
@@ -22,6 +49,20 @@ class StackingClassifier():
         return self
 
     def predict (self, dataset:Dataset)->np.ndarray:
+        """
+        Predict the StackingClassifier class.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to predict.
+
+        Returns
+        -------
+        predictions: np.ndarray
+            The predicted values.
+
+        """
         predictions = []
         for model in self.models:
             predictions.append(model.predict(dataset))
@@ -30,6 +71,20 @@ class StackingClassifier():
         return final_pred
 
     def score (self, dataset:Dataset)->float:
+        """
+        Evaluate the StackingClassifier class.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to evaluate.
+
+        Returns
+        -------
+        score: float
+            The score of the model.
+
+        """
         final_pred = self.predict(dataset) 
         score = accuracy(dataset.y, final_pred)
         return score

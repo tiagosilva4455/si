@@ -5,8 +5,21 @@ from si.metrics.mse import mse
 
 
 class RidgeRegressionLeastSquares:
-
+"""
+    Ridge regression using least squares
+"""
     def __init__(self, l2_penalty:float ,scale:bool = True) -> None:
+        """
+        Constructor of the RidgeRegressionLeastSquares class
+
+        Parameters
+        ----------
+        l2_penalty: float
+            The L2 penalty to use.
+        scale: bool, default=True
+            If True, scale the data before fitting.
+
+        """
 
         self.l2_penalty = l2_penalty
         self.scale = scale
@@ -17,6 +30,19 @@ class RidgeRegressionLeastSquares:
         self.std = None
 
     def fit(self, dataset:Dataset)-> "RidgeRegressionLeastSquares":
+        """
+        Fit the RidgeRegressionLeastSquares class.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to fit.
+
+        Returns
+        -------
+        self: RidgeRegressionLeastSquares
+            The fitted RidgeRegressionLeastSquares class.
+        """
         if self.scale  == True:
             self.mean = np.nanmean (dataset.X)
             self.std = np.nanstd (dataset.X)
@@ -41,11 +67,36 @@ class RidgeRegressionLeastSquares:
         return self
     
     def predict (self, dataset:Dataset) -> np.ndarray:
+        """
+        Predict the values for a given dataset.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to predict.
+        Returns
+        -------
+        predictions: np.ndarray
+            The predicted values.
+        """
         X = (dataset.X - self.mean) / self.std if self.scale else dataset.X
         X = np.c_[np.ones(X.shape[0]),X]
         return np.dot(X, np.r_[self.theta, self.theta_zero])
     
     def score (self, dataset:Dataset) -> float:
+        """
+        Compute the score of the model.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to compute the score on.
+
+        Returns
+        -------
+        score: float
+            The score of the model.
+        """
         predictions = self.predict(dataset)
         return mse(dataset.y, predictions)
 

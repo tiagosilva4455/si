@@ -210,3 +210,40 @@ class DenseLayer(Layer):
             The shape of the output of the layer.
         """
         return (self.n_units,)
+
+
+class DropoutLayer(Layer):
+
+    def __init__(self, probability:float):
+        """
+        Initialize the dropout layer.
+
+        Parameters
+        ----------
+        probability: float
+            The probability of dropping a neuron.
+        """
+        super().__init__()
+        self.probability = probability
+
+        self.mask = None
+        self.input = None
+        self.output = None
+
+    def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
+        if training:
+            scaling_factor = 1/(1-self.probability)
+            self.input = input
+            self.mask = np.random.binomial(1, self.probability, size=input.shape) / self.probability
+            self.output = input * self.mask * scaling_factor
+        return self.output
+
+
+    def backward_propagation(self, output_error: np.ndarray) -> float:
+        return output_error * self.mask
+
+    def output_shape(self) -> tuple:
+        return self.input_shape()
+
+    def parameters(self) -> int:
+        return 0
