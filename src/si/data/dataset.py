@@ -133,7 +133,7 @@ class Dataset:
         -------
         Dataset
         """
-        if value is not "mean" or "median" or float:
+        if value != "mean" or "median" or float:
             raise ValueError('Value must be "mean", "median", or a float')
 
         na_columns = np.isnan(self.X).any(axis=0)
@@ -161,10 +161,10 @@ class Dataset:
         -------
         Dataset
         """
-        if index is not int:
+        if index != int:
             raise ValueError('Index must be an integer')
 
-        if index is not range[0:self.X.shape[0]]:
+        if index != range[0:self.X.shape[0]]:
             raise ValueError('Enter a valid index')
 
         self.X = np.delete(self.X, index, axis=0)
