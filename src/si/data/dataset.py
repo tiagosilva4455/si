@@ -5,7 +5,7 @@ import pandas as pd
 
 
 class Dataset:
-    def __init__(self, X: np.ndarray, y: np.ndarray = None, features: Sequence[str] = None, label: str = None) -> None:
+    def __init__(self,  X: np.ndarray, y: np.ndarray = None, features: Sequence[str] = None, label: str = None) -> None:
         """
         Dataset represents a tabular dataset for single output classification.
 
@@ -117,42 +117,60 @@ class Dataset:
         -------
         Dataset
         """
-        if self.y is None:
-            return Dataset(self.X[~np.isnan(self.X).any(axis=1)], features=self.features)
-        else:
-            return Dataset(self.X[~np.isnan(self.X).any(axis=1)], self.y[~np.isnan(self.X).any(axis=1)], features=self.features, label=self.label)
+        na_values = np.isnan(self.X).any(axis=1)
+        self.X = self.X[~na_values]
+        self.y = self.y[~na_values]#~ means negate operation, therefore is chosing the rows that are not nan
+        return self
 
-    def fillna(self, value: Union[int, float]) -> "Dataset":
+    def fillna(self, value: float or str) -> "Dataset":
         """
         Returns a new dataset with missing values filled
         Parameters
         ----------
-        value: int or float
-            The value to fill missing values with
+        value: int or float or str
+            The value to fill or the the method to use to fill
         Returns
         -------
         Dataset
         """
-        if self.y is None:
-            return Dataset(np.nan_to_num(self.X, nan=value), features=self.features)
-        else:
-            return Dataset(np.nan_to_num(self.X, nan=value), self.y, features=self.features, label=self.label)
+        if value is not "mean" or "median" or float:
+            raise ValueError('Value must be "mean", "median", or a float')
 
-    def remove_by_index(self, indices: np.ndarray) -> "Dataset":
+        na_columns = np.isnan(self.X).any(axis=0)
+        na_col_indices = np.where(na_columns)[0]
+
+        for col in na_col_indices:
+            if value == "mean":
+                self.X[:, col] = np.nanmean(self.X[:, col])
+            elif value == "median":
+                self.X[:, col] = np.nanmedian(self.X[:, col])
+            else:
+                self.X[:, col] = value
+
+        return self
+
+
+    def remove_by_index(self, index: int) -> "Dataset":
         """
         Returns a new dataset with samples removed by index
         Parameters
         ----------
-        indices: numpy.ndarray (n_samples)
+        index: int
             The indices to remove
         Returns
         -------
         Dataset
         """
-        if self.y is None:
-            return Dataset(np.delete(self.X, indices, axis=0), features=self.features)
-        else:
-            return Dataset(np.delete(self.X, indices, axis=0), np.delete(self.y, indices, axis=0), features=self.features, label=self.label)
+        if index is not int:
+            raise ValueError('Index must be an integer')
+
+        if index is not range[0:self.X.shape[0]]:
+            raise ValueError('Enter a valid index')
+
+        self.X = np.delete(self.X, index, axis=0)
+        if self.has_label():
+            self.y = np.delete(self.y, index, axis=0)
+        return self
 
     def summary(self) -> pd.DataFrame:
         """
