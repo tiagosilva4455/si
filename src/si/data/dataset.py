@@ -122,19 +122,19 @@ class Dataset:
         self.y = self.y[~na_values]#~ means negate operation, therefore is chosing the rows that are not nan
         return self
 
-    def fillna(self, value: float or str) -> "Dataset":
+    def fillna(self, value: int or float or str ) -> "Dataset":
         """
         Returns a new dataset with missing values filled
         Parameters
         ----------
         value: int or float or str
-            The value to fill or the the method to use to fill
+            The value to fill or the  method to use to fill
         Returns
         -------
         Dataset
         """
-        if value != "mean" or "median" or float:
-            raise ValueError('Value must be "mean", "median", or a float')
+        if value is None:
+            raise ValueError('Value must be "mean", "median", or a int/float')
 
         na_columns = np.isnan(self.X).any(axis=0)
         na_col_indices = np.where(na_columns)[0]
@@ -161,10 +161,10 @@ class Dataset:
         -------
         Dataset
         """
-        if index != int:
+        if type(index) != int:
             raise ValueError('Index must be an integer')
 
-        if index != range[0:self.X.shape[0]]:
+        if index not in range(0, self.X.shape[0]):
             raise ValueError('Enter a valid index')
 
         self.X = np.delete(self.X, index, axis=0)
@@ -187,6 +187,7 @@ class Dataset:
             "var": self.get_variance()
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
