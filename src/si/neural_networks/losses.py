@@ -134,7 +134,7 @@ class BinaryCrossEntropy(LossFunction):
 
 class CategoricalCrossEntropy(LossFunction):
 
-    def loss(self, y_true: np.ndarray, y_pred: np.ndarray)-> float
+    def loss(self, y_true: np.ndarray, y_pred: np.ndarray)-> float:
         """
         Compute the cross entropy loss function.
 
@@ -154,7 +154,7 @@ class CategoricalCrossEntropy(LossFunction):
         p = np.clip(y_pred, 1e-15, 1 - 1e-15)
         return -np.sum(y_true * np.log(p))
 
-    def derivative(self, y_true: np.ndarray, y_pred: np.ndarray)-> np.ndarray
+    def derivative(self, y_true: np.ndarray, y_pred: np.ndarray)-> np.ndarray:
         """
         Compute the derivative of the cross entropy loss function.
 
